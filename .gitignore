@@ -1,0 +1,48 @@
+# Ignore system and IDE files
+.DS_Store
+.idea/
+.vscode/
+
+# Ignore logs and databases
+*.log
+*.sqlite
+*.db
+
+# Ignore user-generated content
+uploads/
+
+# Ignore environment-specific files
+.env
+.env.local
+.env.*.local
+
+# Ignore dependencies
+node_modules/
+vendor/
+
+# Ignore build artifacts and compiled code
+/build/
+/dist/
+*.class
+*.jar
+
+# Ignore user-specific files
+*.sublime-project
+*.sublime-workspace
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Ignore misc project files
+Thumbs.db
+Desktop.ini
+
+# Ignore OS generated files
+ehthumbs.db
+Icon?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+.DS_Store

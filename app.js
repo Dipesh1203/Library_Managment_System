@@ -1,22 +1,16 @@
 const express = require("express");
 const app = express();
-const mongoose = require("mongoose");
+const db = require("./db/db.js");
+const booksRouter = require("./routes/books.js");
+const userRouter = require("./routes/users.js");
+const bodyparser = require("body-parser");
 
-async function main() {
-  await mongoose.connect("mongodb://127.0.0.1:27017/horizonExplorers");
-}
+app.use(express.json());
+app.use(bodyparser.json());
+app.use(express.urlencoded({ extended: true }));
 
-main()
-  .then(() => {
-    console.log("Connection established");
-  })
-  .catch((err) => {
-    console.log(err);
-  });
-
-app.get("/", (req, res) => {
-  res.send("Hi welcome to my page Website is under construction");
-});
+app.use("/books", booksRouter);
+app.use("/user", userRouter);
 
 app.listen(8080, (req, res) => {
   console.log("listening to port");

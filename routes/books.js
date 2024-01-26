@@ -1,11 +1,12 @@
 const express = require("express");
 const router = express.Router();
-
+const { isLoggedIn } = require("../middleware");
 const db = require("../db/db");
 
 router.get("/new", (req, res) => {
   res.send("hello");
 });
+
 router.get("/:id", async (req, res) => {
   try {
     const { id } = req.params;
@@ -19,16 +20,21 @@ router.get("/:id", async (req, res) => {
     res.status(500).send("Internal Server Error");
   }
 });
-router.post("/", async (req, res) => {
+
+router.post("/", isLoggedIn, async (req, res) => {
   try {
+    const data = await db("librarian").where({ librarianId: req.user });
+    if (!data) {
+      return res.send("you can not add books");
+    }
     const { title, authorName, publisher } = req.body;
     const [bookId] = await db("books")
       .insert({
         title: title,
         authorName: authorName,
-        publisher: publisher, // Assuming user_id is an integer
+        publisher: publisher,
       })
-      .returning("bookId"); // Corrected column name for returning the inserted ID
+      .returning("bookId");
     res.send({ id: bookId });
   } catch (error) {
     console.error(error);

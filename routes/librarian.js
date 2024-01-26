@@ -42,7 +42,7 @@ router.post("/staffLogin", async (req, res) => {
     }
     const exactPass = await bcrypt.compare(password, staff[0].password);
     if (staff && exactPass) {
-      const token = jwt.sign({ id: staff.librarianId }, "asdf", {
+      const token = jwt.sign({ id: staff[0].librarianId }, "asdf", {
         expiresIn: "3h",
       });
       const options = {

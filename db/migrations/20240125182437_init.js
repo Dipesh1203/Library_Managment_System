@@ -7,6 +7,7 @@ exports.up = function (knex) {
     table.increments("librarianId").primary();
     table.string("librarianName").notNullable();
     table.string("email").notNullable().unique();
+    table.string("password").notNullable();
     table.timestamps(true, true);
   });
 };

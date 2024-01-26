@@ -1,13 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const db = require("../db/db.js");
-const bodyparser = require("body-parser");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-
-// router.use(express.json());
-// router.use(bodyparser.json());
-// router.use(express.urlencoded({ extended: true }));
+const { isLoggedIn } = require("../middleware.js");
 
 router.get("/new", (req, res) => {
   res.send("hello");
@@ -20,11 +16,6 @@ router.post("/signup", async (req, res) => {
     if (!(userName && enrollmentNo && email && password && dob)) {
       res.status(400).send("all fields are compulsory");
     }
-
-    const exist = await db("users").where({ email: email });
-    // if (!exist) {
-    //   res.send("please register your self");
-    // }
 
     const encPass = await bcrypt.hash(password, 10);
 
@@ -57,7 +48,7 @@ router.post("/login", async (req, res) => {
       console.log("first register your self");
       res.redirect("/users/signup");
     }
-    const exactPass = await bcrypt.compare(password, user.password);
+    const exactPass = await bcrypt.compare(password, user[0].password);
     if (user && exactPass) {
       const token = jwt.sign({ id: user.userId }, "asdf", {
         expiresIn: "3h",
@@ -68,7 +59,29 @@ router.post("/login", async (req, res) => {
       };
       res.status(200).cookie("token", token, options).json({ user });
     }
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+//add book to user account
+router.put("/:bookId", isLoggedIn, async (req, res) => {
+  try {
+    const { bookId } = req.params;
+    const currentIssueBooks = await db("users")
+      .where({ userId: req.user })
+      .select("issued_Books");
+    const newBooks = [...currentIssueBooks, bookId];
+    await db("users").where({ userId: req.user }).update({
+      issued_books: newBooks,
+    });
+    const userData = await db("users").select("*").where({ userId: req.user });
+    console.log("book added");
+    res.send({ userData });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
 });
 
 module.exports = router;

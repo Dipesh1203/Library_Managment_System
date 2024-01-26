@@ -10,7 +10,6 @@ exports.up = function (knex) {
     table.string("userName").notNullable();
     table.string("enrollmentNo").notNullable();
     table.string("email").notNullable().unique();
-    table.string("password").notNullable();
     table.date("dob").notNullable();
     table.json("issued_books").defaultTo("[]");
     table.timestamps(true, true);

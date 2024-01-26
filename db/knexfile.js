@@ -5,19 +5,18 @@
  */
 module.exports = {
   development: {
-    client: "mysql",
+    client: "postgresql",
     connection: {
-      host: "127.0.0.1", // Your MySQL host address
-      user: "root", // Your MySQL username
-      password: "Dipesh12@", // Your MySQL password
-      database: "library", // Your MySQL database name
+      database: "Library",
+      user: "postgres",
+      password: "1234",
+    },
+    pool: {
+      min: 2,
+      max: 10,
     },
     migrations: {
       tableName: "knex_migrations",
-      directory: "./migrations", // Directory for migration files
-    },
-    seeds: {
-      directory: "./seeds", // Directory for seed files
     },
   },
 };

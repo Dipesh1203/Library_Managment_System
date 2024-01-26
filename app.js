@@ -1,34 +1,16 @@
 const express = require("express");
 const app = express();
-const mongoose = require("mongoose");
-const Book = require("./models/book");
+const db = require("./db/db.js");
+const booksRouter = require("./routes/books.js");
+const userRouter = require("./routes/users.js");
+const bodyparser = require("body-parser");
 
-async function main() {
-  await mongoose.connect("mongodb://127.0.0.1:27017/bookCollections");
-}
+app.use(express.json());
+app.use(bodyparser.json());
+app.use(express.urlencoded({ extended: true }));
 
-main()
-  .then(() => {
-    console.log("Connection established");
-  })
-  .catch((err) => {
-    console.log(err);
-  });
-
-app.get("/", (req, res) => {
-  res.send("Hi welcome to my page Website is under construction");
-});
-
-//create route
-app.get("/book/new", (req, res) => {
-  res.render("Book/book.ejs");
-});
-
-//
-app.post("/book/", (req, res) => {
-  let data = req.params;
-  consol;
-});
+app.use("/books", booksRouter);
+app.use("/user", userRouter);
 
 app.listen(8080, (req, res) => {
   console.log("listening to port");

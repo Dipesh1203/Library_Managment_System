@@ -6,6 +6,19 @@ const db = require("../db/db");
 router.get("/new", (req, res) => {
   res.send("hello");
 });
+router.get("/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const book = db("books").select("*").where({ bookId: id });
+    if (!book) {
+      return res.status(404).send("Book not found");
+    }
+    res.send(book);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
+});
 router.post("/", async (req, res) => {
   try {
     const { title, authorName, publisher } = req.body;
@@ -17,20 +30,6 @@ router.post("/", async (req, res) => {
       })
       .returning("bookId"); // Corrected column name for returning the inserted ID
     res.send({ id: bookId });
-  } catch (error) {
-    console.error(error);
-    res.status(500).send("Internal Server Error");
-  }
-});
-
-router.get("/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-    const book = db("books").select("*").where({ bookId: id });
-    if (!book) {
-      return res.status(404).send("Book not found");
-    }
-    res.send(book);
   } catch (error) {
     console.error(error);
     res.status(500).send("Internal Server Error");

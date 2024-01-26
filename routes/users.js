@@ -2,6 +2,8 @@ const express = require("express");
 const router = express.Router();
 const db = require("../db/db.js");
 const bodyparser = require("body-parser");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 router.use(express.json());
 router.use(bodyparser.json());
@@ -11,23 +13,42 @@ router.get("/new", (req, res) => {
   res.send("hello");
 });
 
-router.post("/", async (req, res) => {
+router.post("/signup", async (req, res) => {
   try {
-    const { userName, enrollmentNo, email, dob, issued_books } = req.body;
+    const { userName, enrollmentNo, email, password, dob, issued_books } =
+      req.body;
+    if (!(userName || enrollmentNo || email || password || dob)) {
+      res.status(400).send("all fields are compulsory");
+    }
+
+    const exist = await db("users").where({ email: email });
+    // if (!exist) {
+    //   res.send("please register your self");
+    // }
+
+    const encPass = await bcrypt.hash(password, 10);
+
     const [userId] = await db("users")
       .insert({
         userName: userName,
         enrollmentNo: enrollmentNo,
         email: email,
+        password: encPass,
         dob: dob,
         issued_books: issued_books,
       })
       .returning("userId");
-    res.send({ id: userId });
+
+    res.json({ id: userId });
   } catch (error) {
     console.error(error);
     res.status(500).send("Internal Server Error");
   }
+});
+
+router.post("/login", async (req, res) => {
+  try {
+  } catch (error) {}
 });
 
 module.exports = router;

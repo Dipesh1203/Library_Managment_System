@@ -1,5 +1,3 @@
-const db = require("./db/db.js");
-const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
 module.exports.isLoggedIn = (req, res, next) => {
@@ -18,5 +16,3 @@ module.exports.isLoggedIn = (req, res, next) => {
     res.status(401).send("Invalid");
   }
 };
-
-module.exports.isLibrarian = (req, res, next) => {};

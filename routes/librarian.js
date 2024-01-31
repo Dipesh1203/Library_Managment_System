@@ -36,15 +36,19 @@ router.post("/staffLogin", async (req, res) => {
     }
     const staff = await db("librarian").where({ email });
     console.log(staff);
-    if (!staff) {
+    if (staff.length === 0) {
       console.log("first register your self");
       return res.redirect("/librarian/staffRegister");
     }
     const exactPass = await bcrypt.compare(password, staff[0].password);
     if (staff && exactPass) {
-      const token = jwt.sign({ id: staff[0].librarianId }, "asdf", {
-        expiresIn: "3h",
-      });
+      const token = jwt.sign(
+        { id: staff[0].librarianId, name: staff[0].librarianName },
+        "asdf",
+        {
+          expiresIn: "3h",
+        }
+      );
       const options = {
         expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
         httpOnly: true,
@@ -52,6 +56,21 @@ router.post("/staffLogin", async (req, res) => {
       res.status(200).cookie("token", token, options).json({ staff });
     }
   } catch (error) {}
+});
+
+router.delete("/:id/delete", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deleted = await db("librarian")
+      .where({ librarianIdId: id })
+      .del()
+      .returning("*");
+    console.log(deleted);
+    res.send("User Deleted SuccesFully", { deleted });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
 });
 
 // router.put("/issueBook", async (req, res) => {

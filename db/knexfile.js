@@ -11,6 +11,9 @@ module.exports = {
       user: "postgres",
       password: "1234",
     },
+    seeds: {
+      directory: "./seeds",
+    },
     pool: {
       min: 2,
       max: 10,

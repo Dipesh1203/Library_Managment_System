@@ -10,6 +10,7 @@ router.get("/new", (req, res) => {
   res.send("hello");
 });
 
+//signup route
 router.post("/signup", async (req, res) => {
   try {
     const { userName, enrollmentNo, email, password, dob, issued_books } =
@@ -37,6 +38,7 @@ router.post("/signup", async (req, res) => {
   }
 });
 
+//login route
 router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -98,6 +100,7 @@ router.put("/:bookId", isLoggedIn, async (req, res) => {
   }
 });
 
+//destory route
 router.delete("/:id/delete", async (req, res) => {
   try {
     const { id } = req.params;
